@@ -1,41 +1,38 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export interface MediaDeviceSelection {
-  microphoneId?: string
-  cameraId?: string
-  speakerId?: string
+interface MediaSettingState {
+  microphone?: string
+  camera?: string
+  speaker?: string
 }
 
-interface MediaState {
-  username?: string
-  devices: MediaDeviceSelection
-
+interface MediaStoreState {
+  username: string
+  devicesSetting: MediaSettingState
+  setDevices: (type: keyof MediaSettingState, id: string) => void
   setUsername: (username: string) => void
-  setDevice: (type: keyof MediaState['devices'], id: string) => void
-  reset: () => void
+  resetSettings: () => void
 }
+// export const useMediaStore = create<MediaStoreState>()(
+//   persist(
+//     (set) => ({
+//       username: '',
+//       devicesSetting: {},
+//       setUsername: (username) => set({ username }),
+//       setDevices: (type, id) => set((state) => ({ devicesSetting: { ...state.devicesSetting, [type]: id } })),
+//       resetSettings: () => set({ username: '', devicesSetting: {} })
+//     }),
+//     {
+//       name: 'media-store'
+//     }
+//   )
+// )
 
-export const useMediaStore = create<MediaState>()(
-  persist(
-    (set) => ({
-      username: undefined,
-      devices: {},
-
-      setUsername: (username) => set({ username }),
-
-      setDevice: (type, id) =>
-        set((state) => ({
-          devices: {
-            ...state.devices,
-            [type]: id
-          }
-        })),
-
-      reset: () => set({ username: undefined, devices: {} })
-    }),
-    {
-      name: 'media-settings'
-    }
-  )
-)
+export const useMediaStore = create<MediaStoreState>((set) => ({
+  username: '',
+  devicesSetting: {},
+  setUsername: (username) => set({ username }),
+  setDevices: (type, id) => set((state) => ({ devicesSetting: { ...state.devicesSetting, [type]: id } })),
+  resetSettings: () => set({ username: '', devicesSetting: {} })
+}))

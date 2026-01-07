@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import SettingMediaPage from './pages/SettingMediaPage'
 import MeetingScreenPage from './pages/MeetingScreenPage'
 import HomeMediaPage from './pages/HomeMediaPage'
+import ProtectedLayout from './layout/ProtectedLayout'
 
 /**
  * The main application component.
@@ -17,14 +18,20 @@ function App() {
       element: <SettingMediaPage />
     },
     {
-      path: '/media',
-      element: <HomeMediaPage />
-    },
-    {
-      path: '/meeting',
-      element: <MeetingScreenPage />
+      element: <ProtectedLayout />,
+      children: [
+        {
+          path: '/media',
+          element: <HomeMediaPage />
+        },
+        {
+          path: '/meeting',
+          element: <MeetingScreenPage />
+        }
+      ]
     }
   ])
+
   return (
     <>
       <RouterProvider router={router} />
