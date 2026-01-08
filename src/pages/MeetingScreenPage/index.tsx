@@ -1,6 +1,5 @@
 import { Button, Input } from 'antd'
-import { Mic, SendHorizontal } from 'lucide-react'
-import React from 'react'
+import { SendHorizontal } from 'lucide-react'
 
 type Props = {}
 

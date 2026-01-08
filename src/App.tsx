@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import SettingMediaPage from './pages/SettingMediaPage'
-import MeetingScreenPage from './pages/MeetingScreenPage'
-import HomeMediaPage from './pages/HomeMediaPage'
 import ProtectedLayout from './layout/ProtectedLayout'
+import { MeetingScreenPage, PreCallPage, SettingMediaPage } from './pages'
+import { useMediaDevices } from './hooks/useMediaDevices'
+import { useMediaStore } from './store/MediaStore'
+import { useEffect } from 'react'
 
 /**
  * The main application component.
@@ -22,7 +22,7 @@ function App() {
       children: [
         {
           path: '/media',
-          element: <HomeMediaPage />
+          element: <PreCallPage />
         },
         {
           path: '/meeting',
