@@ -1,87 +1,89 @@
 // components/MediaSettingsForm.tsx
-import { Button, Form, Input, Select } from 'antd'
-import type { FormProps } from 'antd'
-import { useMediaStore } from '../../../store/MediaStore'
+import { Button, Input } from 'antd'
 import { useEffect } from 'react'
-
-type FieldType = {
-  username?: string
-  microphone?: string
-  camera?: string
-  speaker?: string
-}
-
-type MediaSettingsFormProps = {
-  form: FormProps['form']
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { mediaSettingsSchema, type MediaSettingsFormValues } from '../../../schema/mediaSetting.schema'
+import { MediaDeviceSelectRHF } from '../../../components/MediaDeviceSelect '
+import { useMediaStore } from '../../../store/MediaStore'
+import { useNavigate } from 'react-router'
+type Props = {
   microphones: MediaDeviceInfo[]
   cameras: MediaDeviceInfo[]
   speakers: MediaDeviceInfo[]
-  onFinish: (values: FieldType) => void
 }
+export const MediaSettingsForm = ({ microphones, cameras, speakers }: Props) => {
+  const navigate = useNavigate()
+  const form = useForm<MediaSettingsFormValues>({
+    resolver: zodResolver(mediaSettingsSchema),
+    defaultValues: {
+      displayName: '',
+      microphoneId: undefined,
+      cameraId: undefined,
+      speakerId: undefined
+    }
+  })
+  
+  const { control, setValue, handleSubmit } = form
+  const devices = useMediaStore((state) => state.devices)
+  const setDevies = useMediaStore((state) => state.setDevices)
 
-export const MediaSettingsForm = ({ form, microphones, cameras, speakers, onFinish }: MediaSettingsFormProps) => {
-  const setDevices = useMediaStore((s) => s.setDevices)
-  const devices = useMediaStore((s) => s.devices)
+  useEffect(() => {
+    if (microphones.length > 0) {
+      setValue('microphoneId', microphones[0].deviceId, { shouldDirty: false })
+    }
+  }, [microphones])
+  useEffect(() => {
+    if (cameras.length > 0) {
+      setValue('cameraId', cameras[0].deviceId, { shouldDirty: false })
+    }
+  }, [cameras])
+  useEffect(() => {
+    if (speakers.length > 0) {
+      setValue('speakerId', speakers[0].deviceId, { shouldDirty: false })
+    }
+  }, [speakers])
 
-
+  const normalize = (v?: string) => (v === '' ? undefined : v)
+  const onSubmit = (values: MediaSettingsFormValues) => {
+    const payload = {
+      ...values,
+      microphoneId: normalize(values.microphoneId),
+      cameraId: normalize(values.cameraId),
+      speakerId: normalize(values.speakerId)
+    }
+    setDevies(payload)
+    navigate('/precall')
+  }
+  useEffect(() => {
+    console.log('devices changed:', devices)
+  }, [devices])
 
   return (
-    <Form
-      name='basic'
-      labelCol={{ span: 4 }}
-      //   wrapperCol={{ span: 16 }}
-      labelAlign='left'
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      autoComplete='off'
-      form={form}
-    >
-      <Form.Item<FieldType>
-        label='Username'
-        name='username'
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <Input onChange={(value) => setDevices('username', value.target.value)} />
-      </Form.Item>
-
-      <Form.Item label='Microphone' name='microphone'>
-        <Select
-          disabled={microphones.length === 0}
-          options={microphones.map((d) => ({
-            label: d.label || 'Unknown Microphone',
-            value: d.deviceId
-          }))}
-          onChange={(value) => setDevices('microphoneId', value)}
+    <form onSubmit={handleSubmit(onSubmit)} className='max-w-xl space-y-4'>
+      <div>
+        <label className='block mb-1 font-medium'>Display Name</label>
+        <Controller
+          name='displayName'
+          control={control}
+          render={({ field, fieldState }) => (
+            <>
+              <Input {...field} />
+              {fieldState.error && <p className='text-red-500 text-sm mt-1'>{fieldState.error.message}</p>}
+            </>
+          )}
         />
-      </Form.Item>
+      </div>
 
-      <Form.Item label='Camera' name='camera'>
-        <Select
-          disabled={cameras.length === 0}
-          options={cameras.map((d) => ({
-            label: d.label || 'Unknown Camera',
-            value: d.deviceId
-          }))}
-          onChange={(value) => setDevices('cameraId', value)}
-        />
-      </Form.Item>
+      <MediaDeviceSelectRHF name='microphoneId' label='Select microphone' devices={microphones} control={control} />
 
-      <Form.Item label='Speaker' name='speaker'>
-        <Select
-          disabled={speakers.length === 0}
-          options={speakers.map((d) => ({
-            label: d.label || 'Unknown Speaker',
-            value: d.deviceId
-          }))}
-          onChange={(value) => setDevices('speakerId', value)}
-        />
-      </Form.Item>
+      <MediaDeviceSelectRHF name='cameraId' label='Select camera' devices={cameras} control={control} />
 
-      <Form.Item className='text-end' label={null}>
-        <Button type='primary' htmlType='submit'>
-          Next
-        </Button>
-      </Form.Item>
-    </Form>
+      <MediaDeviceSelectRHF name='speakerId' label='Select speaker' devices={speakers} control={control} />
+
+      <Button type='primary' htmlType='submit'>
+        Submit
+      </Button>
+    </form>
   )
 }

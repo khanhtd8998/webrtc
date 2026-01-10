@@ -2,9 +2,12 @@ import { Navigate, Outlet } from 'react-router'
 import { useMediaStore } from '../store/MediaStore'
 
 const ProtectedLayout = () => {
-  const { devices: { username } } = useMediaStore()
+  const {
+    devices: { displayName }
+  } = useMediaStore()
+  // useMediaStreamManager()
 
-  if (!username || username.trim() === '') {
+  if (!displayName || displayName.trim() === '') {
     return <Navigate to='/' replace />
   }
 

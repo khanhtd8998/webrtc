@@ -1,22 +1,20 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-interface MediaSettingState {
-  username?: string
-  microphoneId?: string
-  cameraId?: string
-  speakerId?: string
-}
+import type { MediaSettingState } from '../types/setting'
 
 interface MediaStoreState {
   devices: MediaSettingState
-  setDevices: (type: keyof MediaSettingState, id: string) => void
+  setDevices: (devices: Partial<MediaSettingState>) => void
   resetSettings: () => void
 }
 
-
 export const useMediaStore = create<MediaStoreState>((set) => ({
   devices: {},
-  setDevices: (type, id) => set((state) => ({ devices: { ...state.devices, [type]: id } })),
+  setDevices: (devices) =>
+    set((state) => ({
+      devices: {
+        ...state.devices,
+        ...devices
+      }
+    })),
   resetSettings: () => set({ devices: {} })
 }))

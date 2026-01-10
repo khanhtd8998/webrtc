@@ -1,65 +1,30 @@
 // pages/SettingMediaPage.tsx
-import { Form } from 'antd'
-import { useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router'
-import { LoadingOverlay } from '../../components/LoadingOverlay'
+import { useEffect } from 'react'
+import { VideoPreview } from '../../components/VideoPreview'
 import { useMediaDevices } from '../../hooks/useMediaDevices'
 import { useMediaStore } from '../../store/MediaStore'
-import { MediaPreview } from './components/MediaPreview'
 import { MediaSettingsForm } from './components/MediaSettingsForm'
 
-type FieldType = {
-  username?: string
-  microphone?: string
-  camera?: string
-  speaker?: string
-}
-
 const SettingMediaPage = () => {
-  const devices = useMediaStore((s) => s.devices)
+  const { microphones, cameras, speakers } = useMediaDevices()
   const setDevices = useMediaStore((s) => s.setDevices)
-
-  const nav = useNavigate()
-  const [form] = Form.useForm()
-
-  const localCameraRef = useRef<HTMLVideoElement>(null)
-
-  const { microphones, cameras, speakers, isLoading } = useMediaDevices(localCameraRef)
-
   useEffect(() => {
-    form?.setFieldsValue({
-      username: devices.username,
-      microphone: devices.microphoneId,
-      camera: devices.cameraId,
-      speaker: devices.speakerId
+    setDevices({
+      microphoneId: microphones[0]?.deviceId,
+      cameraId: cameras[0]?.deviceId,
+      speakerId: speakers[0]?.deviceId
     })
-  }, [devices])
+  }, [microphones, cameras, speakers])
 
-  const onFinish = (values: FieldType) => {
-    const { username, microphone, camera, speaker } = values
 
-    if (username) setDevices('username', username)
-    if (microphone) setDevices('microphoneId', microphone)
-    if (camera) setDevices('cameraId', camera)
-    if (speaker) setDevices('speakerId', speaker)
-    form.resetFields()
-    nav('/media')
-  }
   return (
     <>
-      {isLoading && <LoadingOverlay />}
-
       <div className='max-w-4xl mx-auto'>
-        {/* <h1 className='font-semibold text-xl'>Setting</h1> */}
         <div className='mt-16'>
-          <MediaSettingsForm
-            form={form}
-            microphones={microphones}
-            cameras={cameras}
-            speakers={speakers}
-            onFinish={onFinish}
-          />
-          <MediaPreview videoRef={localCameraRef} />
+          <MediaSettingsForm microphones={microphones} cameras={cameras} speakers={speakers} />
+          <div className='mt-6'>
+            <VideoPreview />
+          </div>
         </div>
       </div>
     </>
