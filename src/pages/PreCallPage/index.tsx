@@ -1,36 +1,26 @@
 import { Button, Input } from 'antd'
-import { Mic } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import { VideoPreview } from '../../components/VideoPreview'
-import { useMediaStore } from '../../store/MediaStore'
-import { useEffect } from 'react'
+import ToggleMediaSection from './components/ToggleMediaSection'
 
 const HomeMediaPage = () => {
-  const devices = useMediaStore((state) => state.devices)
-  useEffect(() => {
-    console.log('devices changed in precall:', devices)
-  }, [devices])
+  const navigate = useNavigate()
+
   return (
     <>
-      <div className='max-w-4xl mx-auto p-4'>
+      <div className='max-w-3xl mx-auto p-4'>
         <div className='mt-16 flex items-center gap-4'>
           <Input id='link-meeting' placeholder='Enter link Meeting' />
-          <Button type='primary'>Join</Button>
+          <Button onClick={() => navigate('/meeting')} type='primary'>
+            Join
+          </Button>
           <Button type='primary'>Create Meeting</Button>
         </div>
         <div className='mt-4'>
           <VideoPreview />
         </div>
-        <div className='mt-16'>
-          <div className='flex justify-center mt-4 gap-4'>
-            <Button shape='circle' size='large'>
-              <Mic />
-            </Button>
-            {/* {devicesSetting?.cameraId && (
-              <Button shape='circle' size='large'>
-                <Video />
-              </Button>
-            )} */}
-          </div>
+        <div className='flex justify-center mt-4 gap-4'>
+          <ToggleMediaSection />
         </div>
       </div>
     </>

@@ -1,5 +1,6 @@
 import { Button, Input } from 'antd'
 import { SendHorizontal } from 'lucide-react'
+import { VideoPreview } from '../../components/VideoPreview'
 
 type Props = {}
 
@@ -15,8 +16,8 @@ const MeetingScreenPage = (props: Props) => {
         </div>
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-150'>
-          <video className='w-full h-full rounded-md bg-[#ccc]' autoPlay playsInline></video>
-          <video className='w-full h-full rounded-md bg-[#ccc]' autoPlay playsInline></video>
+          <VideoPreview />
+          <VideoPreview />
           <div className='border border-[#ccc] rounded-md p-2 h-full'>
             <div className='rounded-2xl h-150 overflow-y-auto'>
               {Array.from({ length: 40 }).map((_, i) => (

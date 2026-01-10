@@ -1,18 +1,19 @@
 // components/MediaDeviceSelectRHF.tsx
 import { Controller, type Control } from 'react-hook-form'
 import { Select } from 'antd'
-import { formatDeviceLabel } from '../ultils/media'
-import type { MediaSettingsFormValues } from '../schema/mediaSetting.schema'
-import { useMediaStore } from '../store/MediaStore'
+import { formatDeviceLabel } from '../../../ultils/media'
+import type { MediaSettingsFormValues } from '../../../schema/mediaSetting.schema'
+import { useMediaStore } from '../../../store/MediaStore'
 
 type Props = {
   name: keyof MediaSettingsFormValues
   label: string
   devices: MediaDeviceInfo[]
   control: Control<MediaSettingsFormValues>
+  disabled?: boolean
 }
 
-export const MediaDeviceSelectRHF = ({ name, label, devices, control }: Props) => {
+export const MediaDeviceSelectRHF = ({ name, label, devices, control, disabled }: Props) => {
   const setDevies = useMediaStore((state) => state.setDevices)
   return (
     <div className='mb-4'>
@@ -24,6 +25,8 @@ export const MediaDeviceSelectRHF = ({ name, label, devices, control }: Props) =
         render={({ field }) => (
           <Select
             {...field}
+            disabled={disabled}
+            className='w-full'
             allowClear
             placeholder={label}
             options={devices.map((d) => ({
@@ -31,8 +34,8 @@ export const MediaDeviceSelectRHF = ({ name, label, devices, control }: Props) =
               label: formatDeviceLabel(d.label)
             }))}
             onChange={(v) => {
-                field.onChange(v ?? undefined)
-                setDevies({ [name]: v })
+              field.onChange(v ?? undefined)
+              setDevies({ [name]: v })
             }}
           />
         )}

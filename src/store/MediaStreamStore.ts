@@ -1,10 +1,12 @@
 // store/MediaStreamStore.ts
 import { create } from 'zustand'
 
-interface MediaStreamState {
+export interface MediaStreamState {
   stream: MediaStream | null
   videoTrack: MediaStreamTrack | null
   audioTrack: MediaStreamTrack | null
+  isVideoEnabled: boolean
+  isAudioEnabled: boolean
 
   setVideoTrack: (track: MediaStreamTrack) => void
   setAudioTrack: (track: MediaStreamTrack) => void
@@ -20,10 +22,16 @@ export const useMediaStreamStore = create<MediaStreamState>((set, get) => ({
   videoTrack: null,
   audioTrack: null,
 
+  isVideoEnabled: true,
+  isAudioEnabled: true,
+
   setVideoTrack: (track) => {
     const stream = get().stream!
-    get().videoTrack?.stop()
-    if (get().videoTrack) stream.removeTrack(get().videoTrack!)
+    const oldTrack = get().videoTrack
+    if (oldTrack) {
+      stream.removeTrack(oldTrack)
+      oldTrack.stop()
+    }
     stream.addTrack(track)
     set({ videoTrack: track })
   },
@@ -37,19 +45,25 @@ export const useMediaStreamStore = create<MediaStreamState>((set, get) => ({
   },
 
   toggleVideo: (enabled) => {
-    get().videoTrack && (get().videoTrack!.enabled = enabled)
+    const track = get().videoTrack
+    if (track) track.enabled = enabled
+    set({ isVideoEnabled: enabled })
   },
 
   toggleAudio: (enabled) => {
-    get().audioTrack && (get().audioTrack!.enabled = enabled)
+    const track = get().audioTrack
+    if (track) track.enabled = enabled
+    set({ isAudioEnabled: enabled })
   },
 
   clear: () => {
-    get().stream?.getTracks().forEach((t) => t.stop())
+    get()
+      .stream?.getTracks()
+      .forEach((t) => t.stop())
     set({
       stream: new MediaStream(),
       videoTrack: null,
-      audioTrack: null,
+      audioTrack: null
     })
-  },
+  }
 }))
