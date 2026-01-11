@@ -1,23 +1,17 @@
 import { Button, Input } from 'antd'
 import { SendHorizontal } from 'lucide-react'
+import { useParams } from 'react-router'
+import { useMeetingActions } from '../../hooks/useMeetingActions'
 import { usePeerConnection } from '../../hooks/usePeerConnection'
 import { LocalVideo } from './components/LocalVideo'
 import { RemoteVideo } from './components/RemoteVideo'
-import { useMeetingActions } from '../../hooks/useMeetingActions'
-import { useMediaStore } from '../../store/MediaStore'
-import { useEffect } from 'react'
-import { socket } from '../../configs/socket'
 
 const MeetingScreenPage = () => {
-  const roomId = sessionStorage.getItem('meeting-room')
+  const { roomId } = useParams()
+  if (!roomId) return null
   const isHost = sessionStorage.getItem('meeting-role') === 'host'
-  const localDisplayName = useMediaStore((s) => s.devices.displayName)
-  const { remoteStream } = usePeerConnection(roomId!, isHost)
-  useEffect(() => {
-    if (localDisplayName && roomId) {
-      socket.emit('peer-info', { displayName: localDisplayName })
-    }
-  }, [])
+  const { remoteDisplayName } = useMeetingActions()
+  const { remoteStream } = usePeerConnection(roomId, isHost)
 
   return (
     <>
@@ -31,7 +25,7 @@ const MeetingScreenPage = () => {
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
           <LocalVideo />
-          <RemoteVideo stream={remoteStream} />
+          <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
           <div className='border border-[#ccc] rounded-md p-2 h-full'>
             <div className='rounded-2xl h-100 overflow-y-auto'>
               {Array.from({ length: 40 }).map((_, i) => (

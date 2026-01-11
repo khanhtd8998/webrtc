@@ -13,6 +13,8 @@ export type MediaDeviceError = {
 export type MediaStoreState = {
   devices: MediaSettingState
   errors: MediaDeviceError
+  remoteDisplayName: string | undefined
+  setRemoteDisplayName: (name: string) => void
   setDevices: (devices: Partial<MediaSettingState>) => void
   setErrors: (updater: Partial<MediaDeviceError> | ((prev: MediaDeviceError) => MediaDeviceError)) => void
   resetSettings: () => void
