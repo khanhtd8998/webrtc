@@ -13,7 +13,6 @@ const MeetingScreenPage = () => {
   const isHost = sessionStorage.getItem('meeting-role') === 'host'
   const localDisplayName = useMediaStore((s) => s.devices.displayName)
   const { remoteStream } = usePeerConnection(roomId!, isHost)
-  const { remoteDisplayName } = useMeetingActions()
   useEffect(() => {
     if (localDisplayName && roomId) {
       socket.emit('peer-info', { displayName: localDisplayName })
@@ -32,7 +31,7 @@ const MeetingScreenPage = () => {
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
           <LocalVideo />
-          <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
+          <RemoteVideo stream={remoteStream} />
           <div className='border border-[#ccc] rounded-md p-2 h-full'>
             <div className='rounded-2xl h-100 overflow-y-auto'>
               {Array.from({ length: 40 }).map((_, i) => (
