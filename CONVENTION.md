@@ -1,5 +1,5 @@
 # Project Structure
-
+```
 src/
 ├── assets/                # static files (images, icons, etc.)
 ├── components/            # reusable UI parts
@@ -47,7 +47,7 @@ src/
 ├── tsconfig.json          # base TypeScript configuration
 ├── tsconfig.node.json     # TypeScript config for Node-related files (e.g., build scripts)
 └── vite.config.ts         # Vite configuration (bundler, plugins, dev server)
-
+```
 # 📏 Coding Conventions
 
 ## 📝 Naming Rules
