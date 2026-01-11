@@ -1,10 +1,25 @@
 import { Button, Input } from 'antd'
 import { SendHorizontal } from 'lucide-react'
-import { VideoPreview } from '../../components/VideoPreview'
+import { usePeerConnection } from '../../hooks/usePeerConnection'
+import { LocalVideo } from './components/LocalVideo'
+import { RemoteVideo } from './components/RemoteVideo'
+import { useMeetingActions } from '../../hooks/useMeetingActions'
+import { useMediaStore } from '../../store/MediaStore'
+import { useEffect } from 'react'
+import { socket } from '../../configs/socket'
 
-type Props = {}
+const MeetingScreenPage = () => {
+  const roomId = sessionStorage.getItem('meeting-room')
+  const isHost = sessionStorage.getItem('meeting-role') === 'host'
+  const localDisplayName = useMediaStore((s) => s.devices.displayName)
+  const { remoteStream } = usePeerConnection(roomId!, isHost)
+  const { remoteDisplayName } = useMeetingActions()
+  useEffect(() => {
+    if (localDisplayName && roomId) {
+      socket.emit('peer-info', { displayName: localDisplayName })
+    }
+  }, [])
 
-const MeetingScreenPage = (props: Props) => {
   return (
     <>
       <div className='p-4'>
@@ -15,11 +30,11 @@ const MeetingScreenPage = (props: Props) => {
           </Button>
         </div>
 
-        <div className='mt-16 grid grid-cols-3 gap-4 h-150'>
-          <VideoPreview />
-          <VideoPreview />
+        <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
+          <LocalVideo />
+          <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
           <div className='border border-[#ccc] rounded-md p-2 h-full'>
-            <div className='rounded-2xl h-150 overflow-y-auto'>
+            <div className='rounded-2xl h-100 overflow-y-auto'>
               {Array.from({ length: 40 }).map((_, i) => (
                 <p key={i} className='p-2'>
                   Chat messages will appear here

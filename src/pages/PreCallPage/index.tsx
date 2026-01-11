@@ -1,20 +1,16 @@
-import { Button, Input } from 'antd'
-import { useNavigate } from 'react-router'
 import { VideoPreview } from '../../components/VideoPreview'
+import { useMeetingActions } from '../../hooks/useMeetingActions'
+import ActionMeetingSection from './components/ActionMeetingSection'
 import ToggleMediaSection from './components/ToggleMediaSection'
 
-const HomeMediaPage = () => {
-  const navigate = useNavigate()
+const PreCallPage = () => {
+  const { createMeeting, joinMeeting, loading, error } = useMeetingActions()
 
   return (
     <>
       <div className='max-w-3xl mx-auto p-4'>
-        <div className='mt-16 flex items-center gap-4'>
-          <Input id='link-meeting' placeholder='Enter link Meeting' />
-          <Button onClick={() => navigate('/meeting')} type='primary'>
-            Join
-          </Button>
-          <Button type='primary'>Create Meeting</Button>
+        <div className='mt-4 flex gap-4 items-center w-full'>
+          <ActionMeetingSection onJoin={joinMeeting} onCreate={createMeeting} loading={loading} error={error} />
         </div>
         <div className='mt-4'>
           <VideoPreview />
@@ -27,4 +23,4 @@ const HomeMediaPage = () => {
   )
 }
 
-export default HomeMediaPage
+export default PreCallPage

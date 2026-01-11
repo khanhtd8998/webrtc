@@ -2,9 +2,11 @@ import { useEffect } from 'react'
 import { useMediaStore } from '../../store/MediaStore'
 import { useMediaStreamStore } from '../../store/MediaStreamStore'
 import { useMediaDevices } from '../useMediaDevices'
+import { parseMediaError } from '../../ultils/parseMediaError'
 
 export const useVideoTrackManager = () => {
   const cameraId = useMediaStore((s) => s.devices.cameraId)
+  const setErrors = useMediaStore((s) => s.setErrors)
   const { videoTrack, setVideoTrack, isVideoEnabled } = useMediaStreamStore()
 
   useEffect(() => {
@@ -16,13 +18,15 @@ export const useVideoTrackManager = () => {
     let cancelled = false
 
     const run = async () => {
-      // 1️⃣ cleanup track cũ
+      // cleanup track cũ
       if (videoTrack) {
+        const stream = useMediaStreamStore.getState().stream
+        stream?.removeTrack(videoTrack)
         videoTrack.stop()
       }
 
-      // 2️⃣ cho browser thời gian release camera
-      await new Promise((r) => setTimeout(r, 150))
+      // cho browser thời gian release camera
+      await new Promise((r) => setTimeout(r, 300))
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -39,8 +43,13 @@ export const useVideoTrackManager = () => {
         newTrack.enabled = isVideoEnabled
 
         setVideoTrack(newTrack)
-      } catch (e) {
+        setErrors({ video: undefined })
+      } catch (e: any) {
         console.error('Switch camera failed:', e)
+        setErrors((prev) => ({
+          ...prev,
+          video: parseMediaError(e)
+        }))
       }
     }
 

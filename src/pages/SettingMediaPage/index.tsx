@@ -7,10 +7,13 @@ import { MediaSettingsForm } from './components/MediaSettingsForm'
 import ToggleMediaSection from '../PreCallPage/components/ToggleMediaSection'
 import { LoadingOverlay } from '../../components/LoadingOverlay'
 import { useMediaStreamStore } from '../../store/MediaStreamStore'
+import { useNavigationType } from 'react-router'
 
 const SettingMediaPage = () => {
   const { microphones, cameras, speakers, isLoading } = useMediaDevices()
+  const navType = useNavigationType()
   const setDevices = useMediaStore((s) => s.setDevices)
+  const clear = useMediaStreamStore((s) => s.clear)
 
   useEffect(() => {
     setDevices({
@@ -19,6 +22,12 @@ const SettingMediaPage = () => {
       speakerId: speakers[0]?.deviceId
     })
   }, [microphones, cameras, speakers])
+
+  useEffect(() => {
+    if (navType === 'POP') {
+      clear()
+    }
+  }, [navType])
 
   if (isLoading) {
     return <LoadingOverlay />

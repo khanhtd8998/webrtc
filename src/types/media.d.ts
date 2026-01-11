@@ -1,15 +1,20 @@
-import type { MediaSettingState } from './setting'
+export interface MediaSettingState {
+  displayName?: string
+  microphoneId?: string
+  cameraId?: string
+  speakerId?: string
+}
 
 export type MediaDeviceError = {
-  audio?: string
-  video?: string
+  audio?: MediaDeviceErrorType
+  video?: MediaDeviceErrorType
 }
 
 export type MediaStoreState = {
   devices: MediaSettingState
   errors: MediaDeviceError
   setDevices: (devices: Partial<MediaSettingState>) => void
-  setErrors: (errors: MediaDeviceError) => void
+  setErrors: (updater: Partial<MediaDeviceError> | ((prev: MediaDeviceError) => MediaDeviceError)) => void
   resetSettings: () => void
 }
 
@@ -28,3 +33,5 @@ export type MediaStreamState = {
 
   clear: () => void
 }
+
+export type MediaDeviceErrorType = 'permission-denied' | 'not-found' | 'device-busy' | 'unknown'

@@ -1,6 +1,6 @@
 // store/MediaStreamStore.ts
 import { create } from 'zustand'
-import type { MediaStreamState } from '../types/mediaDevice'
+import type { MediaStreamState } from '../types/media'
 
 export const useMediaStreamStore = create<MediaStreamState>((set, get) => ({
   stream: new MediaStream(),
@@ -48,7 +48,9 @@ export const useMediaStreamStore = create<MediaStreamState>((set, get) => ({
     set({
       stream: new MediaStream(),
       videoTrack: null,
-      audioTrack: null
+      audioTrack: null,
+      isVideoEnabled: true,
+      isAudioEnabled: true
     })
   }
 }))

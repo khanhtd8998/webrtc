@@ -1,12 +1,9 @@
 import { Camera, CameraOff, Mic, MicOff } from 'lucide-react'
 import { ToggleMediaButton } from '../../../components/ToggleMediaButton'
-import { useMediaStreamStore } from '../../../store/MediaStreamStore'
-import { useMediaDevices } from '../../../hooks/useMediaDevices'
 import { useMediaStore } from '../../../store/MediaStore'
+import { useMediaStreamStore } from '../../../store/MediaStreamStore'
 
-type Props = {}
-
-const ToggleMediaSection = (props: Props) => {
+const ToggleMediaSection = () => {
   const isVideoEnabled = useMediaStreamStore((s) => s.isVideoEnabled)
   const isAudioEnabled = useMediaStreamStore((s) => s.isAudioEnabled)
   const videoTrack = useMediaStreamStore((s) => s.videoTrack)

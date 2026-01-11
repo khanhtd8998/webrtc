@@ -18,7 +18,7 @@ function App() {
           element: <PreCallPage />
         },
         {
-          path: '/meeting',
+          path: '/meeting/:roomId',
           element: <MeetingScreenPage />
         }
       ]

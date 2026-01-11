@@ -7,7 +7,6 @@ import { mediaSettingsSchema, type MediaSettingsFormValues } from '../../../sche
 import { MediaDeviceSelectRHF } from './MediaDeviceSelect '
 import { useMediaStore } from '../../../store/MediaStore'
 import { useNavigate } from 'react-router'
-import { useMediaDevices } from '../../../hooks/useMediaDevices'
 type Props = {
   microphones: MediaDeviceInfo[]
   cameras: MediaDeviceInfo[]

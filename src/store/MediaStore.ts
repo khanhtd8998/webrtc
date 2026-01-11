@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { MediaStoreState } from '../types/mediaDevice'
+import type { MediaStoreState } from '../types/media'
 
 export const useMediaStore = create<MediaStoreState>((set) => ({
   devices: {},
@@ -11,6 +11,9 @@ export const useMediaStore = create<MediaStoreState>((set) => ({
         ...devices
       }
     })),
-  setErrors: (errors) => set({ errors }),
+  setErrors: (updater) =>
+    set((state) => ({
+      errors: typeof updater === 'function' ? updater(state.errors) : { ...state.errors, ...updater }
+    })),
   resetSettings: () => set({ devices: {} })
 }))

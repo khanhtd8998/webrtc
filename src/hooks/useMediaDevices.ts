@@ -1,7 +1,8 @@
 // hooks/useMediaDevices.ts
 import { useEffect, useState } from 'react'
 import { useMediaStore } from '../store/MediaStore'
-import type { MediaDeviceError } from '../types/mediaDevice'
+import type { MediaDeviceError } from '../types/media'
+import { parseMediaError } from '../ultils/parseMediaError'
 
 export const useMediaDevices = () => {
   const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([])
@@ -26,7 +27,7 @@ export const useMediaDevices = () => {
       audioStream.getTracks().forEach((t) => t.stop())
     } catch (e) {
       console.warn('Microphone denied')
-      nextErrors.audio = 'Microphone permission denied'
+      setErrors({ audio: parseMediaError(e) })
     }
 
     try {
@@ -37,13 +38,7 @@ export const useMediaDevices = () => {
       videoStream.getTracks().forEach((t) => t.stop())
     } catch (e: any) {
       console.warn('Camera denied')
-      if (e.name === 'NotAllowedError') {
-        nextErrors.video = 'Camera permission denied'
-      } else if (e.name === 'NotFoundError') {
-        nextErrors.video = 'No camera found'
-      } else {
-        nextErrors.video = ''
-      }
+      setErrors({ video: parseMediaError(e) })
     }
 
     const devices = await navigator.mediaDevices.enumerateDevices()
@@ -57,8 +52,6 @@ export const useMediaDevices = () => {
 
     setIsLoading(false)
     setErrors(nextErrors)
-
-
   }
 
   return {
