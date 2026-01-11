@@ -1,14 +1,5 @@
 import { create } from 'zustand'
-import type { MediaSettingState } from '../types/setting'
-import type { MediaDeviceError } from '../types/mediaDevice'
-
-interface MediaStoreState {
-  devices: MediaSettingState
-  errors: MediaDeviceError
-  setDevices: (devices: Partial<MediaSettingState>) => void
-  setErrors: (errors: MediaDeviceError) => void
-  resetSettings: () => void
-}
+import type { MediaStoreState } from '../types/mediaDevice'
 
 export const useMediaStore = create<MediaStoreState>((set) => ({
   devices: {},

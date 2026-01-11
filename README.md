@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# 📦 Dependencies
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+| Package                        | Version   | Description                                                       |
+|────────────────────────────────|-----------|-------------------------------------------------------------------|
+| @hookform/resolvers            | ^5.2.2    | Validation resolvers for react-hook-form (works with Zod/Yup)     |
+| antd                           | ^6.1.4    | Ant Design UI library (components, layout, forms)                 |
+| lucide-react                   | ^0.562.0  | Modern SVG icon library for React                                 |
+| react                          | ^19.2.0   | Core React library for building UI                                |
+| react-dom                      | ^19.2.0   | React DOM renderer, connects React to browser                     |
+| react-hook-form                | ^7.70.0   | Lightweight form management library                               |
+| react-router                   | ^7.11.0   | Routing library for React (navigation between pages)              |
+| zod                            | ^4.3.5    | TypeScript-first schema validation                                |
+| zustand                        | ^5.0.9    | Simple state management library for React                         |
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🛠️ DevDependencies
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+| Package                        | Version   | Description                                                       |
+|--------------------------------|-----------|-------------------------------------------------------------------|
+| @eslint/js                     | ^9.39.1   | ESLint core rules for JavaScript                                  |
+| @types/node                    | ^24.10.1  | TypeScript type definitions for Node.js                           |
+| @types/react                   | ^19.2.5   | TypeScript type definitions for React                             |
+| @types/react-dom               | ^19.2.3   | TypeScript type definitions for React DOM                         |
+| @vitejs/plugin-react-swc       | ^4.2.2    | Vite plugin for fast React compilation using SWC                  |
+| eslint                         | ^9.39.1   | Linting tool for JavaScript/TypeScript                            |
+| eslint-plugin-react-hooks      | ^7.0.1    | ESLint rules for React hooks usage                                |
+| eslint-plugin-react-refresh    | ^0.4.24   | ESLint rules for React Fast Refresh                               |
+| globals                        | ^16.5.0   | Provides global variables definitions for ESLint                  |
+| typescript                     | ~5.9.3    | TypeScript compiler                                               |
+| typescript-eslint              | ^8.46.4   | ESLint plugin + parser for TypeScript                             |
+| vite                           | ^7.2.4    | Next-generation frontend build tool (bundler + dev server)        |
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+# 📜 Scripts
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+| Script        | Command                                                | Description                                      |
+|---------------|--------------------------------------------------------|--------------------------------------------------|
+| dev           | vite --host                                            | Start local development server with Vite         |
+| build         | tsc -b && vite build                                   | Compile TypeScript and build production bundle   |
+| lint          | eslint .                                               | Run ESLint to check code quality                 |
+| preview       | vite preview                                           | Preview production build locally                 |
+| lint:fix      | eslint . --fix                                         | Auto-fix linting issues                          |
+| prettier      | prettier --check "src/**/(*.tsx\|*.ts\|*.css\|*.scss)" | Check code formatting with Prettier              |
+| prettier:fix  | prettier --write "src/**/(*.tsx\|*.ts\|*.css\|*.scss)" | Auto-format code with Prettier                   |
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘

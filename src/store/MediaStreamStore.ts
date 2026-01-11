@@ -1,21 +1,6 @@
 // store/MediaStreamStore.ts
 import { create } from 'zustand'
-
-export interface MediaStreamState {
-  stream: MediaStream | null
-  videoTrack: MediaStreamTrack | null
-  audioTrack: MediaStreamTrack | null
-  isVideoEnabled: boolean
-  isAudioEnabled: boolean
-
-  setVideoTrack: (track: MediaStreamTrack) => void
-  setAudioTrack: (track: MediaStreamTrack) => void
-
-  toggleVideo: (enabled: boolean) => void
-  toggleAudio: (enabled: boolean) => void
-
-  clear: () => void
-}
+import type { MediaStreamState } from '../types/mediaDevice'
 
 export const useMediaStreamStore = create<MediaStreamState>((set, get) => ({
   stream: new MediaStream(),

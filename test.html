@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <video width="400" height="400" id="camera" autoplay playsinline></video>
+      <button id="btnCam1">Cam 1</button>
+      <button id="btnCam2">Cam 2</button>
+    </div>
+    <script>
+      const video = document.getElementById('camera')
+      const btnCam1 = document.getElementById('btnCam1')
+      const btnCam2 = document.getElementById('btnCam2')
+      const constraints = { audio: true, video: true }
+      const camDevices = []
+      const micDevices = []
+      let stream = null
+
+      async function startCam(deviceIndex) {
+        try {
+          // Dừng stream cũ
+          if (stream) {
+            stream.getTracks().forEach((track) => track.stop()) // stop cả audio + video
+            stream = null
+            await new Promise((resolve) => setTimeout(resolve, 200)) // delay 200ms để hardware release
+          }
+
+          let videoConstraints
+          if (camDevices[deviceIndex] && camDevices[deviceIndex].deviceId) {
+            // Với cam 2 (index 1): dùng exact
+            // Với cam 1 (index 0): không exact, để Chrome tự chọn default (ổn định hơn)
+            videoConstraints = deviceIndex === 1 ? { deviceId: { exact: camDevices[1].deviceId } } : true // hoặc { deviceId: camDevices[0].deviceId } nếu muốn prefer
+          } else {
+            videoConstraints = true // fallback
+          }
+
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            video: videoConstraints,
+            audio: true // nếu cần mic, giữ; nếu không thì false để tránh lỗi audio
+          })
+
+          video.srcObject = newStream
+          stream = newStream
+
+          console.log(`Đã mở cam ${deviceIndex + 1} thành công`)
+        } catch (error) {
+          console.error(`Lỗi khi mở cam ${deviceIndex + 1}:`, error.name, error.message)
+          alert(`Không mở được cam ${deviceIndex + 1}: ${error.message}\nThử reload trang hoặc kiểm tra kết nối cam.`)
+
+          // Fallback: thử mở default nếu exact fail
+          if (error.name === 'OverconstrainedError' || error.name === 'NotReadableError') {
+            console.log('Fallback: thử mở camera mặc định...')
+            const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            video.srcObject = fallbackStream
+            stream = fallbackStream
+          }
+        }
+      }
+
+      // Gán event
+      btnCam1.addEventListener('click', () => startCam(0)) // Cam 1 (thường default, không exact)
+      btnCam2.addEventListener('click', () => startCam(1)) // Cam 2 (exact)
+
+      const init = async () => {
+        try {
+          const initialStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+          const devices = await navigator.mediaDevices.enumerateDevices()
+
+          camDevices.length = 0 // clear cũ nếu cần
+          devices.forEach((device) => {
+            if (device.kind === 'videoinput') camDevices.push(device)
+          })
+
+          console.log(
+            'Cameras:',
+            camDevices.map((d, i) => `${i + 1}: ${d.label} | ${d.deviceId}`)
+          )
+
+          video.srcObject = initialStream
+          stream = initialStream
+
+          // Enable nút nếu có >=2 cam
+          if (camDevices.length >= 2) {
+            btnCam2.disabled = false
+          }
+        } catch (err) {
+          console.error('Init lỗi:', err)
+        }
+      }
+
+      init()
+    </script>
+  </body>
+</html>
