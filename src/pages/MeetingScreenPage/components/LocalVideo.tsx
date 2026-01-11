@@ -7,13 +7,16 @@ import { useSpeakerManager } from '../../../hooks/MediaStream/useSpeakerManager'
 import { CircleAlert } from 'lucide-react'
 import { mediaErrorMessage } from '../../../ultils/mediaErrorMessage'
 
-export const LocalVideo = () => {
+type Props = {
+    localDisplayName?: string
+}
+export const LocalVideo = ({ localDisplayName }: Props) => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const stream = useMediaStreamStore((s) => s.stream)
   const errors = useMediaStore((s) => s.errors)
   const setErrors = useMediaStore((s) => s.setErrors)
   const errorType = errors.video
-  const displayName = useMediaStore((s) => s.devices.displayName)
+  
 
   useVideoTrackManager()
   useAudioTrackManager()
@@ -33,8 +36,8 @@ export const LocalVideo = () => {
     <>
       <div className='relative w-full h-120 rounded-md overflow-hidden bg-black'>
         <video ref={videoRef} autoPlay muted playsInline className='w-full h-full object-cover' />
-        {displayName && (
-          <div className='absolute left-2 bottom-2 bg-black/60 text-white text-sm px-2 py-1 rounded'>{displayName}</div>
+        {localDisplayName && (
+          <div className='absolute left-2 bottom-2 bg-black/60 text-white text-sm px-2 py-1 rounded'>{localDisplayName}</div>
         )}
 
         {errorType && (

@@ -5,13 +5,20 @@ import { useMeetingActions } from '../../hooks/useMeetingActions'
 import { usePeerConnection } from '../../hooks/usePeerConnection'
 import { LocalVideo } from './components/LocalVideo'
 import { RemoteVideo } from './components/RemoteVideo'
+import { useChat } from '../../hooks/useChat'
+import { useState } from 'react'
+import ChatSection from './components/ChatSection'
+import { useMediaStore } from '../../store/MediaStore'
 
 const MeetingScreenPage = () => {
   const { roomId } = useParams()
   if (!roomId) return null
   const isHost = sessionStorage.getItem('meeting-role') === 'host'
-  const { remoteDisplayName } = useMeetingActions()
   const { remoteStream } = usePeerConnection(roomId, isHost)
+  const { remoteDisplayName } = useMeetingActions()
+  const localDisplayName = useMediaStore((s) => s.devices.displayName)
+
+
 
   return (
     <>
@@ -24,23 +31,9 @@ const MeetingScreenPage = () => {
         </div>
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
-          <LocalVideo />
+          <LocalVideo localDisplayName={localDisplayName} />
           <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
-          <div className='border border-[#ccc] rounded-md p-2 h-full'>
-            <div className='rounded-2xl h-100 overflow-y-auto'>
-              {Array.from({ length: 40 }).map((_, i) => (
-                <p key={i} className='p-2'>
-                  Chat messages will appear here
-                </p>
-              ))}
-            </div>
-            <div className='flex gap-4 mt-3'>
-              <Input id='link-meeting' placeholder='Enter link Meeting' />
-              <Button shape='circle' size='large'>
-                <SendHorizontal />
-              </Button>
-            </div>
-          </div>
+          <ChatSection roomId={roomId} localDisplayName={localDisplayName} remoteDisplayName={remoteDisplayName}/>
         </div>
       </div>
     </>
