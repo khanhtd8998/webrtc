@@ -1,4 +1,4 @@
-```
+````
 # Project Structure
 
 src/
@@ -48,4 +48,26 @@ src/
 ├── tsconfig.json          # base TypeScript configuration
 ├── tsconfig.node.json     # TypeScript config for Node-related files (e.g., build scripts)
 └── vite.config.ts         # Vite configuration (bundler, plugins, dev server)
-```
+
+# 📏 Coding Conventions
+
+## 📝 Naming Rules
+- **Components**: `PascalCase` (e.g., `VideoPreview.tsx`, `ToggleMediaButton.tsx`)
+- **Hooks**: `camelCase` starting with `use` (e.g., `useMediaDevices.ts`)
+- **Stores**: `PascalCase` ending with `Store` (e.g., `MediaStore.ts`)
+- **Schemas**: `camelCase` ending with `.schema.ts` (e.g., `mediaSetting.schema.ts`)
+- **Types**: `camelCase` or `PascalCase` depending on usage (e.g., `mediaDevice.ts`, `Setting`)
+- **Utils**: `camelCase` (e.g., `media.ts`)
+
+## 🎨 Styling
+- Use **CSS Modules** or **global CSS** (`App.css`, `index.css`) for consistent styling.
+- Follow Prettier rules for indentation, spacing, and quotes.
+
+## 🔄 Imports & Exports
+- Each page has its own `index.ts` as entry point.
+- `pages/index.ts` re‑exports all pages for cleaner imports:
+  ```ts
+  export { default as MeetingScreenPage } from './MeetingScreenPage';
+  export { default as PreCallPage } from './PreCallPage';
+  export { default as SettingMediaPage } from './SettingMediaPage';
+````
