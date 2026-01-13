@@ -3,9 +3,9 @@ import { VideoPreview } from '../../components/VideoPreview'
 import { useMeetingActions } from '../../hooks/useMeetingActions'
 import { useMediaStore } from '../../store/MediaStore'
 import ActionMeetingSection from './components/ActionMeetingSection'
+import { useLocalPreview } from '../../hooks/useLocalPreview'
 
 const PreCallPage = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
   const { createMeeting, joinMeeting, loading, error } = useMeetingActions()
   const devices = useMediaStore((s) => s.devices)
 
@@ -20,7 +20,7 @@ const PreCallPage = () => {
           <ActionMeetingSection onJoin={joinMeeting} onCreate={createMeeting} loading={loading} error={error} />
         </div>
         <div className='mt-4'>
-          <VideoPreview videoRef={videoRef} />
+          <VideoPreview />
         </div>
       </div>
     </>

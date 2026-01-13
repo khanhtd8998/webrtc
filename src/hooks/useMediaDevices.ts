@@ -14,6 +14,13 @@ export const useMediaDevices = () => {
 
   useEffect(() => {
     initDevices()
+
+    return () => {
+      setDevices({
+        audioEnabled: true,
+        videoEnabled: true
+      })
+    }
   }, [])
 
   const initDevices = async () => {

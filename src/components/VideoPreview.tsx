@@ -4,14 +4,11 @@ import ToggleMediaSection from '../pages/PreCallPage/components/ToggleMediaSecti
 import { useMediaStore } from '../store/MediaStore'
 import { mediaErrorMessage } from '../ultils/mediaErrorMessage'
 import { Spin } from 'antd'
-type Props = {
-  videoRef: React.RefObject<HTMLVideoElement | null>
-  isShowAction?: boolean
-}
-export const VideoPreview = ({ videoRef, isShowAction = true }: Props) => {
+
+export const VideoPreview = ({ isShowAction = true }: { isShowAction?: boolean }) => {
   const errors = useMediaStore((s) => s.errors)
   const errorType = errors.video
-  const { videoLoading, videoEnabled, audioEnabled, toggleVideo, toggleAudio } = useLocalPreview(videoRef)
+  const { videoRef, videoLoading, videoEnabled, audioEnabled, toggleVideo, toggleAudio } = useLocalPreview()
 
   return (
     <>
@@ -26,7 +23,7 @@ export const VideoPreview = ({ videoRef, isShowAction = true }: Props) => {
         )}
         {videoLoading && (
           <div className='absolute inset-0 flex items-center z-50 justify-center bg-black'>
-            <Spin className='animate-spin' indicator={<Loader />} />
+            <Spin className='animate-spin' indicator={<Loader color='blue' />} />
           </div>
         )}
       </div>

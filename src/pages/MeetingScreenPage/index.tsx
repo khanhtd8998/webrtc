@@ -40,7 +40,7 @@ const MeetingScreenPage = () => {
         </div>
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
-          <LocalVideo videoRef={videoRef} />
+          <LocalVideo />
           <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
           <ChatSection roomId={roomId} localDisplayName={localDisplayName} remoteDisplayName={remoteDisplayName} />
         </div>

@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useMediaStore } from '../store/MediaStore'
 import { parseMediaError } from '../ultils/parseMediaError'
 
-export const useLocalPreview = (videoRef: React.RefObject<HTMLVideoElement | null>) => {
+export const useLocalPreview = () => {
   const streamRef = useRef<MediaStream>(new MediaStream())
-
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  
   const cameraId = useMediaStore((s) => s.devices.cameraId)
   const micId = useMediaStore((s) => s.devices.microphoneId)
   const speakerId = useMediaStore((s) => s.devices.speakerId)
@@ -19,11 +20,11 @@ export const useLocalPreview = (videoRef: React.RefObject<HTMLVideoElement | nul
   const setDevices = useMediaStore((s) => s.setDevices)
 
   /** attach stream */
-//   useEffect(() => {
-//     if (videoRef.current) {
-//       videoRef.current.srcObject = streamRef.current
-//     }
-//   }, [])
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.srcObject = streamRef.current
+    }
+  }, [])
 
   /** switch camera */
   useEffect(() => {
@@ -38,7 +39,7 @@ export const useLocalPreview = (videoRef: React.RefObject<HTMLVideoElement | nul
           t.stop()
         })
 
-        await new Promise((r) => setTimeout(r, 100))
+        await new Promise((r) => setTimeout(r, 250))
 
         const s = await navigator.mediaDevices.getUserMedia({
           video: { deviceId: { exact: cameraId } },
@@ -179,11 +180,12 @@ export const useLocalPreview = (videoRef: React.RefObject<HTMLVideoElement | nul
       if (videoRef.current) {
         videoRef.current.srcObject = null
       }
-      setDevices({ videoEnabled: true, audioEnabled: true })
+      //   setDevices({ videoEnabled: true, audioEnabled: true })
     }
   }, [])
 
   return {
+    videoRef,
     videoLoading,
     videoEnabled,
     audioEnabled,

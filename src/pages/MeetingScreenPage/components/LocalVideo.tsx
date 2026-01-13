@@ -1,18 +1,17 @@
-import { CircleAlert } from 'lucide-react'
-import { useMediaStore } from '../../../store/MediaStore'
+import { Spin } from 'antd'
+import { CircleAlert, Loader } from 'lucide-react'
 import { useLocalPreview } from '../../../hooks/useLocalPreview'
+import { useMediaStore } from '../../../store/MediaStore'
 import { mediaErrorMessage } from '../../../ultils/mediaErrorMessage'
 import ToggleMediaSection from '../../PreCallPage/components/ToggleMediaSection'
 export const LocalVideo = ({
-  videoRef,
   isShowAction = true
 }: {
-  videoRef: React.RefObject<HTMLVideoElement | null>
   isShowAction?: boolean
 }) => {
   const errors = useMediaStore((s) => s.errors)
   const errorType = errors.video
-  const { videoEnabled, audioEnabled, toggleVideo, toggleAudio } = useLocalPreview(videoRef)
+  const { videoRef, videoLoading, videoEnabled, audioEnabled, toggleVideo, toggleAudio } = useLocalPreview()
 
   return (
     <div>
@@ -23,6 +22,11 @@ export const LocalVideo = ({
           <div className='absolute inset-0 flex items-center justify-center bg-black/60'>
             <CircleAlert className='text-white' />
             <p className='text-white text-sm text-center px-2'>{mediaErrorMessage[errorType]}</p>
+          </div>
+        )}
+        {videoLoading && (
+          <div className='absolute inset-0 flex items-center z-50 justify-center bg-black'>
+            <Spin className='animate-spin' indicator={<Loader color='white' />} />
           </div>
         )}
       </div>
