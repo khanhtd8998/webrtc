@@ -1,32 +1,17 @@
-import { CircleAlert } from 'lucide-react'
-import { useEffect, useRef } from 'react'
-import { useAudioTrackManager } from '../hooks/MediaStream/useAudioTrackManager'
-import { useSpeakerManager } from '../hooks/MediaStream/useSpeakerManager'
-import { useVideoTrackManager } from '../hooks/MediaStream/useVideoTrackManager'
+import { CircleAlert, Loader } from 'lucide-react'
+import { useLocalPreview } from '../hooks/useLocalPreview'
+import ToggleMediaSection from '../pages/PreCallPage/components/ToggleMediaSection'
 import { useMediaStore } from '../store/MediaStore'
-import { useMediaStreamStore } from '../store/MediaStreamStore'
 import { mediaErrorMessage } from '../ultils/mediaErrorMessage'
-
-export const VideoPreview = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const stream = useMediaStreamStore((s) => s.stream)
+import { Spin } from 'antd'
+type Props = {
+  videoRef: React.RefObject<HTMLVideoElement | null>
+  isShowAction?: boolean
+}
+export const VideoPreview = ({ videoRef, isShowAction = true }: Props) => {
   const errors = useMediaStore((s) => s.errors)
-  const setErrors = useMediaStore((s) => s.setErrors)
   const errorType = errors.video
-
-  useVideoTrackManager()
-  useAudioTrackManager()
-  useSpeakerManager(videoRef)
-
-  useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream
-    }
-
-    return () => {
-      setErrors({})
-    }
-  }, [stream])
+  const { videoLoading, videoEnabled, audioEnabled, toggleVideo, toggleAudio } = useLocalPreview(videoRef)
 
   return (
     <>
@@ -34,12 +19,28 @@ export const VideoPreview = () => {
         <video ref={videoRef} autoPlay muted playsInline className='w-full h-full object-cover' />
 
         {errorType && (
-          <div className='absolute inset-0 flex items-center justify-center bg-black/60'>
+          <div className='absolute inset-0 flex items-center z-10 justify-center bg-black/60'>
             <CircleAlert className='text-white' />
             <p className='text-white text-sm text-center px-2'>{mediaErrorMessage[errorType]}</p>
           </div>
         )}
+        {videoLoading && (
+          <div className='absolute inset-0 flex items-center z-50 justify-center bg-black'>
+            <Spin className='animate-spin' indicator={<Loader />} />
+          </div>
+        )}
       </div>
+      {isShowAction !== false && (
+        <div className='mt-4 flex gap-4 justify-center items-center w-full'>
+          <ToggleMediaSection
+            videoEnabled={videoEnabled}
+            audioEnabled={audioEnabled}
+            toggleVideo={toggleVideo}
+            toggleAudio={toggleAudio}
+            errors={errors}
+          />
+        </div>
+      )}
     </>
   )
 }

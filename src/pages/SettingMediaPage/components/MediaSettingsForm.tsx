@@ -1,18 +1,20 @@
 // components/MediaSettingsForm.tsx
-import { Button, Input } from 'antd'
-import { useEffect } from 'react'
-import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { mediaSettingsSchema, type MediaSettingsFormValues } from '../../../schema/mediaSetting.schema'
-import { MediaDeviceSelectRHF } from './MediaDeviceSelect '
-import { useMediaStore } from '../../../store/MediaStore'
+import { Button, Input } from 'antd'
+import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
-type Props = {
+import { mediaSettingsSchema, type MediaSettingsFormValues } from '../../../schema/mediaSetting.schema'
+import { useMediaStore } from '../../../store/MediaStore'
+import { MediaDeviceSelect } from './MediaDeviceSelect '
+export const MediaSettingsForm = ({
+  microphones,
+  cameras,
+  speakers
+}: {
   microphones: MediaDeviceInfo[]
   cameras: MediaDeviceInfo[]
   speakers: MediaDeviceInfo[]
-}
-export const MediaSettingsForm = ({ microphones, cameras, speakers }: Props) => {
+}) => {
   const setDevies = useMediaStore((state) => state.setDevices)
   const navigate = useNavigate()
   const errors = useMediaStore((s) => s.errors)
@@ -29,21 +31,21 @@ export const MediaSettingsForm = ({ microphones, cameras, speakers }: Props) => 
 
   const { control, setValue, handleSubmit } = form
 
-  useEffect(() => {
-    if (microphones.length > 0) {
-      setValue('microphoneId', microphones[0].deviceId, { shouldDirty: false })
-    }
-  }, [microphones])
-  useEffect(() => {
-    if (cameras.length > 0) {
-      setValue('cameraId', cameras[0].deviceId, { shouldDirty: false })
-    }
-  }, [cameras])
-  useEffect(() => {
-    if (speakers.length > 0) {
-      setValue('speakerId', speakers[0].deviceId, { shouldDirty: false })
-    }
-  }, [speakers])
+  // useEffect(() => {
+  //   if (microphones.length > 0) {
+  //     setValue('microphoneId', microphones[0].deviceId, { shouldDirty: false })
+  //   }
+  // }, [microphones])
+  // useEffect(() => {
+  //   if (cameras.length > 0) {
+  //     setValue('cameraId', cameras[0].deviceId, { shouldDirty: false })
+  //   }
+  // }, [cameras])
+  // useEffect(() => {
+  //   if (speakers.length > 0) {
+  //     setValue('speakerId', speakers[0].deviceId, { shouldDirty: false })
+  //   }
+  // }, [speakers])
 
   const normalize = (v?: string) => (v === '' ? undefined : v)
   const onSubmit = (values: MediaSettingsFormValues) => {
@@ -73,7 +75,7 @@ export const MediaSettingsForm = ({ microphones, cameras, speakers }: Props) => 
         />
       </div>
 
-      <MediaDeviceSelectRHF
+      <MediaDeviceSelect
         disabled={!!errors.audio}
         name='microphoneId'
         label='Select microphone'
@@ -81,7 +83,7 @@ export const MediaSettingsForm = ({ microphones, cameras, speakers }: Props) => 
         control={control}
       />
 
-      <MediaDeviceSelectRHF
+      <MediaDeviceSelect
         disabled={!!errors.video}
         name='cameraId'
         label='Select camera'
@@ -89,7 +91,13 @@ export const MediaSettingsForm = ({ microphones, cameras, speakers }: Props) => 
         control={control}
       />
 
-      <MediaDeviceSelectRHF name='speakerId' label='Select speaker' devices={speakers} control={control} />
+      <MediaDeviceSelect
+        disabled={!!errors.audio && !!errors.video}
+        name='speakerId'
+        label='Select speaker'
+        devices={speakers}
+        control={control}
+      />
 
       <Button type='primary' htmlType='submit'>
         Submit

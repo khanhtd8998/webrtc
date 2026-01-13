@@ -2,7 +2,10 @@ import { create } from 'zustand'
 import type { MediaStoreState } from '../types/media'
 
 export const useMediaStore = create<MediaStoreState>((set) => ({
-  devices: {},
+  devices: {
+    videoEnabled: true,
+    audioEnabled: true
+  },
   errors: {},
   remoteDisplayName: undefined,
   setDevices: (devices) =>

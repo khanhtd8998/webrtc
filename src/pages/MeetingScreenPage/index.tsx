@@ -1,5 +1,5 @@
 import { Button } from 'antd'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useParams } from 'react-router'
 import { socket } from '../../configs/socket'
 import { useMeetingActions } from '../../hooks/useMeetingActions'
@@ -10,6 +10,7 @@ import { LocalVideo } from './components/LocalVideo'
 import { RemoteVideo } from './components/RemoteVideo'
 
 const MeetingScreenPage = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const { roomId } = useParams()
   if (!roomId) return null
   const isHost = sessionStorage.getItem('meeting-role') === 'host'
@@ -39,7 +40,7 @@ const MeetingScreenPage = () => {
         </div>
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
-          <LocalVideo localDisplayName={localDisplayName} />
+          <LocalVideo videoRef={videoRef} />
           <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
           <ChatSection roomId={roomId} localDisplayName={localDisplayName} remoteDisplayName={remoteDisplayName} />
         </div>

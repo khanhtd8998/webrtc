@@ -1,44 +1,23 @@
-import { useEffect, useRef } from 'react'
-import { useMediaStreamStore } from '../../../store/MediaStreamStore'
-import { useMediaStore } from '../../../store/MediaStore'
-import { useVideoTrackManager } from '../../../hooks/MediaStream/useVideoTrackManager'
-import { useAudioTrackManager } from '../../../hooks/MediaStream/useAudioTrackManager'
-import { useSpeakerManager } from '../../../hooks/MediaStream/useSpeakerManager'
 import { CircleAlert } from 'lucide-react'
+import { useMediaStore } from '../../../store/MediaStore'
+import { useLocalPreview } from '../../../hooks/useLocalPreview'
 import { mediaErrorMessage } from '../../../ultils/mediaErrorMessage'
-
-type Props = {
-    localDisplayName?: string
-}
-export const LocalVideo = ({ localDisplayName }: Props) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const stream = useMediaStreamStore((s) => s.stream)
+import ToggleMediaSection from '../../PreCallPage/components/ToggleMediaSection'
+export const LocalVideo = ({
+  videoRef,
+  isShowAction = true
+}: {
+  videoRef: React.RefObject<HTMLVideoElement | null>
+  isShowAction?: boolean
+}) => {
   const errors = useMediaStore((s) => s.errors)
-  const setErrors = useMediaStore((s) => s.setErrors)
   const errorType = errors.video
-  
-
-  useVideoTrackManager()
-  useAudioTrackManager()
-  useSpeakerManager(videoRef)
-
-  useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream
-    }
-
-    return () => {
-      setErrors({})
-    }
-  }, [stream])
+  const { videoEnabled, audioEnabled, toggleVideo, toggleAudio } = useLocalPreview(videoRef)
 
   return (
-    <>
+    <div>
       <div className='relative w-full h-120 rounded-md overflow-hidden bg-black'>
         <video ref={videoRef} autoPlay muted playsInline className='w-full h-full object-cover' />
-        {localDisplayName && (
-          <div className='absolute left-2 bottom-2 bg-black/60 text-white text-sm px-2 py-1 rounded'>{localDisplayName}</div>
-        )}
 
         {errorType && (
           <div className='absolute inset-0 flex items-center justify-center bg-black/60'>
@@ -47,6 +26,17 @@ export const LocalVideo = ({ localDisplayName }: Props) => {
           </div>
         )}
       </div>
-    </>
+      {isShowAction !== false && (
+        <div className='mt-4 flex gap-4 justify-center items-center w-full'>
+          <ToggleMediaSection
+            videoEnabled={videoEnabled}
+            audioEnabled={audioEnabled}
+            toggleVideo={toggleVideo}
+            toggleAudio={toggleAudio}
+            errors={errors}
+          />
+        </div>
+      )}
+    </div>
   )
 }

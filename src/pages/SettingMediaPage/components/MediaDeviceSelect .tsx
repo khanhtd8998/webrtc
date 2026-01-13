@@ -5,15 +5,20 @@ import { formatDeviceLabel } from '../../../ultils/media'
 import type { MediaSettingsFormValues } from '../../../schema/mediaSetting.schema'
 import { useMediaStore } from '../../../store/MediaStore'
 
-type Props = {
+
+export const MediaDeviceSelect = ({
+  name,
+  label,
+  devices,
+  control,
+  disabled
+}: {
   name: keyof MediaSettingsFormValues
   label: string
   devices: MediaDeviceInfo[]
   control: Control<MediaSettingsFormValues>
   disabled?: boolean
-}
-
-export const MediaDeviceSelectRHF = ({ name, label, devices, control, disabled }: Props) => {
+}) => {
   const setDevies = useMediaStore((state) => state.setDevices)
   return (
     <div className='mb-4'>

@@ -1,10 +1,17 @@
+import { useEffect, useRef } from 'react'
 import { VideoPreview } from '../../components/VideoPreview'
 import { useMeetingActions } from '../../hooks/useMeetingActions'
+import { useMediaStore } from '../../store/MediaStore'
 import ActionMeetingSection from './components/ActionMeetingSection'
-import ToggleMediaSection from './components/ToggleMediaSection'
 
 const PreCallPage = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const { createMeeting, joinMeeting, loading, error } = useMeetingActions()
+  const devices = useMediaStore((s) => s.devices)
+
+  useEffect(() => {
+    console.log('precall', devices)
+  }, [])
 
   return (
     <>
@@ -13,10 +20,7 @@ const PreCallPage = () => {
           <ActionMeetingSection onJoin={joinMeeting} onCreate={createMeeting} loading={loading} error={error} />
         </div>
         <div className='mt-4'>
-          <VideoPreview />
-        </div>
-        <div className='flex justify-center mt-4 gap-4'>
-          <ToggleMediaSection />
+          <VideoPreview videoRef={videoRef} />
         </div>
       </div>
     </>

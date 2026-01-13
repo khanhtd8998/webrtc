@@ -3,11 +3,14 @@ export interface MediaSettingState {
   microphoneId?: string
   cameraId?: string
   speakerId?: string
+  videoEnabled?: boolean
+  audioEnabled?: boolean
 }
 
 export type MediaDeviceError = {
   audio?: MediaDeviceErrorType
   video?: MediaDeviceErrorType
+  speaker?: MediaDeviceErrorType
 }
 
 export type MediaStoreState = {

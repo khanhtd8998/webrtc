@@ -10,6 +10,7 @@ export const useMediaDevices = () => {
   const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const setErrors = useMediaStore((s) => s.setErrors)
+  const setDevices = useMediaStore((s) => s.setDevices)
 
   useEffect(() => {
     initDevices()
@@ -26,7 +27,7 @@ export const useMediaDevices = () => {
       })
       audioStream.getTracks().forEach((t) => t.stop())
     } catch (e) {
-      console.warn('Microphone denied')
+      console.warn('Microphone error', e)
       setErrors({ audio: parseMediaError(e) })
     }
 
@@ -37,7 +38,7 @@ export const useMediaDevices = () => {
       })
       videoStream.getTracks().forEach((t) => t.stop())
     } catch (e: any) {
-      console.warn('Camera denied')
+      console.warn('Camera erroe', e)
       setErrors({ video: parseMediaError(e) })
     }
 
@@ -45,6 +46,12 @@ export const useMediaDevices = () => {
     const microphones = devices.filter((d) => d.kind === 'audioinput')
     const cameras = devices.filter((d) => d.kind === 'videoinput')
     const speakers = devices.filter((d) => d.kind === 'audiooutput')
+
+    setDevices({
+      microphoneId: microphones[0]?.deviceId,
+      cameraId: cameras[0]?.deviceId,
+      speakerId: speakers[0]?.deviceId
+    })
 
     setMicrophones(microphones)
     setCameras(cameras)
