@@ -1,17 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { VideoPreview } from '../../components/VideoPreview'
-import { useMeetingActions } from '../../hooks/useMeetingActions'
-import { useMediaStore } from '../../store/MediaStore'
-import ActionMeetingSection from './components/ActionMeetingSection'
 import { useLocalPreview } from '../../hooks/useLocalPreview'
+import { useMeetingActions } from '../../hooks/useMeetingActions'
+import ActionMeetingSection from './components/ActionMeetingSection'
 
 const PreCallPage = () => {
   const { createMeeting, joinMeeting, loading, error } = useMeetingActions()
-  const devices = useMediaStore((s) => s.devices)
-
-  useEffect(() => {
-    console.log('precall', devices)
-  }, [])
 
   return (
     <>

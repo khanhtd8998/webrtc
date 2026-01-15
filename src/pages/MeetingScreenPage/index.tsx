@@ -2,20 +2,21 @@ import { Button } from 'antd'
 import { useEffect, useRef } from 'react'
 import { useParams } from 'react-router'
 import { socket } from '../../configs/socket'
+import { useLocalPreview } from '../../hooks/useLocalPreview'
 import { useMeetingActions } from '../../hooks/useMeetingActions'
-import { useWebRTCVideo } from '../../hooks/useWebRTCVideo'
+import { useWebRTC } from '../../hooks/useWebRTC'
 import { useMediaStore } from '../../store/MediaStore'
 import ChatSection from './components/ChatSection'
 import { LocalVideo } from './components/LocalVideo'
 import { RemoteVideo } from './components/RemoteVideo'
 
 const MeetingScreenPage = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
   const { roomId } = useParams()
   if (!roomId) return null
-  const isHost = sessionStorage.getItem('meeting-role') === 'host'
-  const { remoteStream } = useWebRTCVideo(roomId, isHost)
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null)
   const { remoteDisplayName, participantsCount, leaveMeeting } = useMeetingActions()
+  const { stream, videoEnabled, audioEnabled } = useLocalPreview()
+  const { replaceTrack } = useWebRTC(roomId, stream, remoteVideoRef)
   const localDisplayName = useMediaStore((s) => s.devices.displayName)
 
   useEffect(() => {
@@ -40,8 +41,11 @@ const MeetingScreenPage = () => {
         </div>
 
         <div className='mt-16 grid grid-cols-3 gap-4 h-100'>
-          <LocalVideo />
-          <RemoteVideo stream={remoteStream} displayName={remoteDisplayName} />
+          <LocalVideo
+            onUpdateVideoStream = {() => replaceTrack('video', videoEnabled)}
+            onUpdateAudioStream = {() => replaceTrack('audio', audioEnabled)}
+           />
+          <RemoteVideo remoteVideoRef={remoteVideoRef} displayName={remoteDisplayName} />
           <ChatSection roomId={roomId} localDisplayName={localDisplayName} remoteDisplayName={remoteDisplayName} />
         </div>
       </div>

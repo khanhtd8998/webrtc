@@ -1,12 +1,12 @@
 // hooks/media/useLocalPreview.ts
-import { useEffect, useRef, useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import { useMediaStore } from '../store/MediaStore'
 import { parseMediaError } from '../ultils/parseMediaError'
 
 export const useLocalPreview = () => {
   const streamRef = useRef<MediaStream>(new MediaStream())
   const videoRef = useRef<HTMLVideoElement | null>(null)
-  
+
   const cameraId = useMediaStore((s) => s.devices.cameraId)
   const micId = useMediaStore((s) => s.devices.microphoneId)
   const speakerId = useMediaStore((s) => s.devices.speakerId)
@@ -16,6 +16,8 @@ export const useLocalPreview = () => {
 
   const [videoLoading, setVideoLoading] = useState(false)
 
+  const [stream, setStream] = useState<MediaStream | null>(null)
+
   const setErrors = useMediaStore((s) => s.setErrors)
   const setDevices = useMediaStore((s) => s.setDevices)
 
@@ -23,6 +25,7 @@ export const useLocalPreview = () => {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.srcObject = streamRef.current
+      setStream(new MediaStream(streamRef.current.getTracks()))
     }
   }, [])
 
@@ -54,7 +57,10 @@ export const useLocalPreview = () => {
         const track = s.getVideoTracks()[0]
         track.enabled = videoEnabled
         streamRef.current.addTrack(track)
-
+        if (videoRef.current) {
+          videoRef.current.srcObject = streamRef.current
+        }
+        setStream(new MediaStream(streamRef.current.getTracks()))
         setErrors({ video: undefined })
       } catch (e: any) {
         setErrors((prev: any) => ({
@@ -97,6 +103,10 @@ export const useLocalPreview = () => {
         const track = s.getAudioTracks()[0]
         track.enabled = audioEnabled
         streamRef.current.addTrack(track)
+        if (videoRef.current) {
+          videoRef.current.srcObject = streamRef.current
+        }
+        setStream(new MediaStream(streamRef.current.getTracks()))
 
         setErrors({ audio: undefined })
       } catch (e: any) {
@@ -149,6 +159,7 @@ export const useLocalPreview = () => {
     if (!videoRef.current) return
 
     videoRef.current.srcObject = streamRef.current
+    setStream(new MediaStream(streamRef.current.getTracks()))
 
     // 👇 apply lại speaker NGAY SAU KHI attach
     if (speakerId && videoRef.current.setSinkId) {
@@ -185,6 +196,7 @@ export const useLocalPreview = () => {
   }, [])
 
   return {
+    stream,
     videoRef,
     videoLoading,
     videoEnabled,
